@@ -1,14 +1,14 @@
 <h1>
-    <span class="far fa-list-alt"></span> Crud Snippets
+    <span class="far fa-list-alt"></span> Issues
 </h1>
 
 <table class="table table-striped">
     <thead>
-<div><h3>Code Snippets</h3></div>            
+<div><h3>Issues</h3></div>            
     </thead>
     <tbody>
-        {{#if viewData.snippets.length}}
-    {{#each viewData.snippets}}
+        {{#if viewData.issues.length}}
+    {{#each viewData.issues}}
     <div>
           <h7>{{this.title}}</h7> <br>
           <a><code>{{this.value}}</code></a> <br>
@@ -21,7 +21,7 @@
     {{/each}}
     {{else}}
     <tr colspan="2">
-      <td class="text-center">No snippets to display.</td>
+      <td class="text-center">No issues to display.</td>
     </tr>
   {{/if}}
     </tbody>

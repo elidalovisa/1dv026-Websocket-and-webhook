@@ -15,6 +15,10 @@ import { router } from './routes/router.js'
 import { connectDB } from './config/mongoose.js'
 import dotenv from 'dotenv'
 
+// Socket.io: To add Socket.io support
+import http from 'http'
+import { Server } from 'socket.io'
+
 dotenv.config()
 
 /**
@@ -79,6 +83,18 @@ const main = async () => {
 
   app.use(session(sessionOptions))
 
+  // Socket.io: Add socket.io to the Express project
+  const server = http.createServer(app)
+  const io = new Server(server)
+  // Socket.io; Not nessessery, but nice to log when users connect/disconnect
+  io.on('connection', (socket) => {
+    console.log('a user connected')
+
+    socket.on('disconnect', () => {
+      console.log('user disconnected')
+    })
+  })
+
   // Middleware to be executed before the routes.
   app.use((req, res, next) => {
     // Flash messages - survives only a round trip.
@@ -89,6 +105,9 @@ const main = async () => {
 
     // Pass the base URL to the views.
     res.locals.baseURL = baseURL
+
+    // Socket.io: Add Socket.io to the Response-object to make it available in controllers.
+    res.io = io
 
     next()
   })
@@ -128,7 +147,8 @@ const main = async () => {
   })
 
   // Starts the HTTP server listening for connections.
-  app.listen(process.env.PORT, () => {
+  // Socket.io: Using server instead of express
+  server.listen(process.env.PORT, () => {
     console.log(`Server running at http://localhost:${process.env.PORT}`)
     console.log('Press Ctrl-C to terminate...')
   })
