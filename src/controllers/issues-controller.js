@@ -69,10 +69,16 @@ export class IssueController {
         title: req.body.title
       })
       await issue.save() // Save object in mongodb.
-      res.redirect('.')
+
+      // Socket.io: Send the created task to all subscribers.
+      res.io.emit('issue', {
+        description: issue.description,
+        id: issue._id
+      })
       req.session.flash = {
         type: 'success', text: 'The issue was created successfully.'
       }
+      res.redirect('.')
     } catch (error) {
       req.session.flash = { type: 'danger', text: error.message }
       res.redirect('./new')
