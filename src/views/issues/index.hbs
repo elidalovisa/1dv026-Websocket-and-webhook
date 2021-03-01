@@ -1,0 +1,28 @@
+<h1>
+    <span class="far fa-list-alt"></span> Crud Snippets
+</h1>
+
+<table class="table table-striped">
+    <thead>
+<div><h3>Code Snippets</h3></div>            
+    </thead>
+    <tbody>
+        {{#if viewData.snippets.length}}
+    {{#each viewData.snippets}}
+    <div>
+          <h7>{{this.title}}</h7> <br>
+          <a><code>{{this.value}}</code></a> <br>
+          <div><small>Created by: {{this.username}}</small>
+            <a href="./{{this.id}}/edit"><span class="far fa-edit"></span></a>
+            <a href="./{{this.id}}/remove"><span class="far fa-trash-alt"></span></a>
+          </div>
+    </div>
+    <br>
+    {{/each}}
+    {{else}}
+    <tr colspan="2">
+      <td class="text-center">No snippets to display.</td>
+    </tr>
+  {{/if}}
+    </tbody>
+</table>
