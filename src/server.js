@@ -60,6 +60,10 @@ const main = async () => {
   // Populates the request object with a body object (req.body).
   app.use(express.urlencoded({ extended: false }))
 
+  // Webhook: Enable body parsing of application/json
+  // Populates the request object with a body object (req.body).
+  app.use(express.json())
+
   // Serve static files.
   app.use(express.static(join(directoryFullName, '..', 'public')))
 
@@ -70,9 +74,7 @@ const main = async () => {
     resave: false, // Resave even if a request is not changing the session.
     saveUninitialized: false, // Don't save a created but not modified session.
     cookie: {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
-      sameSite: 'lax' //
+      maxAge: 1000 * 60 * 60 * 24 // 1 day
     }
   }
 
@@ -116,18 +118,12 @@ const main = async () => {
   app.use('/', router)
 
   // Error handler.
-  app.use(function (error, req, res, next) {
+  app.use(function (err, req, res, next) {
     // 404 Not Found.
-    if (error.statusCode === 404) {
+    if (err.status === 404) {
       return res
         .status(404)
         .sendFile(join(directoryFullName, 'views', 'errors', '404.html'))
-    }
-
-    if (error.statusCode === 403) {
-      return res
-        .status(403)
-        .sendFile(join(directoryFullName, 'views', 'errors', '403.html'))
     }
 
     // 500 Internal Server Error (in production, all other errors send this response).
@@ -142,8 +138,8 @@ const main = async () => {
 
     // Render the error page.
     res
-      .status(error.statusCode || 500)
-      .render('errors/error', { error: error })
+      .status(err.statusCode || 500)
+      .render('errors/error', { error: err })
   })
 
   // Starts the HTTP server listening for connections.

@@ -10,7 +10,7 @@
  */
 export class HookController {
   /**
-   * Recieves a Webhook, validates it and sends it to Tasks Create Controller.
+   * Recieves a Webhook, validates it and sends it to Issues Create Controller.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -18,8 +18,7 @@ export class HookController {
    */
   index (req, res, next) {
     req.body = {
-      description: req.body.object_attributes.title,
-      done: false
+      description: req.body.object_attributes.title
     }
 
     next()

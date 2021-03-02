@@ -1,5 +1,5 @@
 /**
- * Module for the CrudSnippetsController.
+ * Module for the IssueController.
  *
  * @author Elida Arrechea
  * @version 1.0.0
@@ -12,7 +12,7 @@ import { Issue } from '../models/issue.js'
  */
 export class IssueController {
   /**
-   * Displays a list of snippets.
+   * Displays a list of issues.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -21,12 +21,11 @@ export class IssueController {
   async index (req, res, next) {
     try {
       const viewData = {
-        issue: (await Issue.find({})) // Get all objects and filter out id and value.
+        issues: (await Issue.find({})) // Get all objects and filter out id and value.
           .map(issue => ({
             id: issue._id,
             title: issue.title,
-            username: issue.username,
-            value: issue.value
+            description: issue.description
           }))
       }
       res.render('issues/index', { viewData }) // Present the data in HTML.
@@ -36,7 +35,7 @@ export class IssueController {
   }
 
   /**
-   * Displays a snippet.
+   * Displays a issue.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -44,7 +43,7 @@ export class IssueController {
    */
 
   /**
-   * Returns a HTML form for creating a new snippet.
+   * Returns a HTML form for creating a new issue.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -57,7 +56,7 @@ export class IssueController {
   }
 
   /**
-   * Creates a new snippet.
+   * Creates a new issue.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -65,15 +64,23 @@ export class IssueController {
   async create (req, res) {
     try {
       const issue = new Issue({
-        value: req.body.value
+        title: req.body.title,
+        description: req.body.description
       })
-      await issue.save() // Save object in mongodb.
 
+      issue.save()
       // Socket.io: Send the created task to all subscribers.
       res.io.emit('issue', {
         description: issue.description,
         id: issue._id
       })
+
+      // Webhook: Call is from hook. Skip redirect and flash.
+      if (req.headers['x-gitlab-event']) {
+        res.status(200).send('Hook accepted')
+        return
+      }
+
       req.session.flash = {
         type: 'success', text: 'The issue was created successfully.'
       }
@@ -85,7 +92,7 @@ export class IssueController {
   }
 
   /**
-   * Returns a HTML form for editing a snippet.
+   * Returns a HTML form for editing a issue.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -106,7 +113,7 @@ export class IssueController {
   }
 
   /**
-   * Updates a specific snippet.
+   * Updates a specific issue.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -132,7 +139,7 @@ export class IssueController {
   }
 
   /**
-   * Returns a HTML form for removing a snippet.
+   * Returns a HTML form for removing a issue.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -152,16 +159,16 @@ export class IssueController {
   }
 
   /**
-   * Deletes the specified snippet.
+   * Deletes the specified issue.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
   async delete (req, res) {
     try {
-      await Issue.deleteOne({ _id: req.body.id }) // Specify id for snippet that is going to be deleted.
+      await Issue.deleteOne({ _id: req.body.id }) // Specify id for issue that is going to be deleted.
 
-      req.session.flash = { type: 'success', text: 'The snippet was deleted successfully.' }
+      req.session.flash = { type: 'success', text: 'The issue was deleted successfully.' }
       res.redirect('..')
     } catch (error) {
       req.session.flash = { type: 'danger', text: error.message }
