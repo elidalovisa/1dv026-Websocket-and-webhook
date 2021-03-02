@@ -65,8 +65,7 @@ export class IssueController {
   async create (req, res) {
     try {
       const issue = new Issue({
-        value: req.body.value,
-        title: req.body.title
+        value: req.body.value
       })
       await issue.save() // Save object in mongodb.
 

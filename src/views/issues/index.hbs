@@ -9,15 +9,13 @@
     <tbody>
         {{#if viewData.issues.length}}
     {{#each viewData.issues}}
-    <div>
-          <h7>{{this.title}}</h7> <br>
-          <a><code>{{this.value}}</code></a> <br>
-          <div><small>Created by: {{this.username}}</small>
-            <a href="./{{this.id}}/edit"><span class="far fa-edit"></span></a>
-            <a href="./{{this.id}}/remove"><span class="far fa-trash-alt"></span></a>
-          </div>
-    </div>
-    <br>
+     <tr>
+            <td>{{this.description}}</td>
+            <td>
+                <a href="./issues/{{this.id}}/edit"><span class="far fa-edit"></span></a>
+                <a href="./issues/{{this.id}}/remove"><span class="far fa-trash-alt"></span></a>
+            </td>
+        </tr>
     {{/each}}
     {{else}}
     <tr colspan="2">
@@ -26,3 +24,12 @@
   {{/if}}
     </tbody>
 </table>
+
+{{!-- Socket.io: Template for the Client. The same as above but with \ before {{}} to not process it on the server-side --}}
+<template id="issue-template">
+    <td>{{this.description}}</td>
+    <td>
+        <a href="./issues/\{{this.id}}/edit"><span class="far fa-edit"></span></a>
+        <a href="./issues/\{{this.id}}/remove"><span class="far fa-trash-alt"></span></a>
+    </td>
+</template>
