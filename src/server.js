@@ -7,7 +7,6 @@
 import express from 'express'
 import hbs from 'express-hbs'
 import session from 'express-session'
-import helmet from 'helmet'
 import logger from 'morgan'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
@@ -32,18 +31,6 @@ const main = async () => {
   const baseURL = process.env.BASE_URL || '/'
   // Get the directory name of this module's path.
   const directoryFullName = dirname(fileURLToPath(import.meta.url))
-
-  // Set various HTTP headers to make the application little more secure (https://www.npmjs.com/package/helmet).
-  // (The web application uses external scripts and therefore needs to explicitly trust on code.jquery.com and cdn.jsdelivr.net.)
-  app.use(helmet())
-  app.use(
-    helmet.contentSecurityPolicy({
-      directives: {
-        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        'script-src': ["'self'", 'code.jquery.com', 'cdn.jsdelivr.net']
-      }
-    })
-  )
 
   // Set up a morgan logger using the dev format for log entries.
   app.use(logger('dev'))
