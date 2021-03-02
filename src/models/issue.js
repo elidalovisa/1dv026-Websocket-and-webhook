@@ -9,7 +9,7 @@ import mongoose from 'mongoose'
 
 // Create a schema.
 const schema = new mongoose.Schema({
-  value: {
+  description: {
     type: String,
     required: false,
     minlength: 1

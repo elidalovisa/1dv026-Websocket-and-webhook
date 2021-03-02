@@ -10,7 +10,7 @@
         {{#if viewData.issues.length}}
     {{#each viewData.issues}}
      <tr>
-            <td>{{this.description}}</td>
+            <td class="text-center text-primary">{{this.description}}</td>
             <td>
                 <a href="./issues/{{this.id}}/edit"><span class="far fa-edit"></span></a>
                 <a href="./issues/{{this.id}}/remove"><span class="far fa-trash-alt"></span></a>
@@ -27,7 +27,7 @@
 
 {{!-- Socket.io: Template for the Client. The same as above but with \ before {{}} to not process it on the server-side --}}
 <template id="issue-template">
-    <td>{{this.description}}</td>
+    <td class="text-center text-primary">\{{this.description}}</td>
     <td>
         <a href="./issues/\{{this.id}}/edit"><span class="far fa-edit"></span></a>
         <a href="./issues/\{{this.id}}/remove"><span class="far fa-trash-alt"></span></a>

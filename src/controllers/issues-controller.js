@@ -50,7 +50,7 @@ export class IssueController {
    */
   async new (req, res) {
     const viewData = {
-      value: ''
+      description: ''
     }
     res.render('issues/new', { viewData })
   }
@@ -68,9 +68,11 @@ export class IssueController {
         description: req.body.description
       })
 
-      issue.save()
+      await issue.save()
+
       // Socket.io: Send the created task to all subscribers.
       res.io.emit('issue', {
+        title: issue.title,
         description: issue.description,
         id: issue._id
       })
@@ -84,10 +86,10 @@ export class IssueController {
       req.session.flash = {
         type: 'success', text: 'The issue was created successfully.'
       }
-      res.redirect('.')
+      res.redirect('./')
     } catch (error) {
       req.session.flash = { type: 'danger', text: error.message }
-      res.redirect('./new')
+      res.redirect('/new')
     }
   }
 
@@ -103,7 +105,7 @@ export class IssueController {
       const issue = await Issue.findOne({ _id: req.params.id })
       const viewData = {
         id: issue._id,
-        value: issue.value
+        description: issue.description
       }
       res.render('./issues/edit', { viewData })
     } catch (error) {
