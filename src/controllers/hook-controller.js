@@ -19,7 +19,8 @@ export class HookController {
   index (req, res, next) {
     req.body = {
       description: req.body.object_attributes.description,
-      title: req.body.object_attributes.title
+      title: req.body.object_attributes.title,
+      id: req.body.object_attributes_id
     }
 
     next()

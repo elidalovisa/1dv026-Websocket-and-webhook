@@ -16,3 +16,4 @@ const issuesController = new IssueController()
 
 // Map HTTP verbs and route paths to controller actions.
 router.post('/issue', controller.authorize, controller.index, issuesController.create) // Controll and filter data.
+router.post('/:id/update', controller.authorize, controller.index, issuesController.update) // Update a specific issue.

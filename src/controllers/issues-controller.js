@@ -122,10 +122,23 @@ export class IssueController {
    */
   async update (req, res) {
     try {
-      const result = await Issue.updateOne({ _id: req.body.id }, {
+      const issue = await Issue.updateOne({ _id: req.body.id }, {
         value: req.body.value
       })
-      if (result.nModified === 1) {
+
+      // Socket.io: Send the created task to all subscribers.
+      res.io.emit('issue', {
+        title: issue.title,
+        description: issue.description,
+        id: issue._id
+      })
+
+      // Webhook: Call is from hook. Skip redirect and flash.
+      if (req.headers['x-gitlab-event']) {
+        res.status(200).send('Hook accepted')
+        return
+      }
+      if (issue.nModified === 1) {
         req.session.flash = { type: 'success', text: 'The issue was updated successfully.' }
       } else {
         req.session.flash = {
