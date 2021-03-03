@@ -64,8 +64,8 @@ export class IssueController {
   async create (req, res) {
     try {
       const issue = new Issue({
-        title: req.body.title,
-        description: req.body.description
+        description: req.body.description,
+        title: req.body.title
       })
 
       await issue.save()
