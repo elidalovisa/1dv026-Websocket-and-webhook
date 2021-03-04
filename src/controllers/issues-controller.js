@@ -100,7 +100,6 @@ export class IssueController {
    * @param {object} res - Express response object.
    */
   async edit (req, res) {
-    res.locals.session = req.session
     try {
       const issue = await Issue.findOne({ _id: req.params.id })
       const viewData = {
@@ -122,8 +121,8 @@ export class IssueController {
    */
   async update (req, res) {
     try {
-      const issue = await Issue.updateOne({ _id: req.body.id }, {
-        value: req.body.value
+      const issue = await Issue.updateOne({ _id: req.body._id }, {
+        description: req.body.description
       })
 
       // Socket.io: Send the created task to all subscribers.
@@ -163,8 +162,9 @@ export class IssueController {
     try {
       const issue = await Issue.findOne({ _id: req.params.id })
       const viewData = {
-        id: issue._id,
-        value: issue.value
+        title: issue.title,
+        description: issue.description,
+        id: issue._id
       }
       res.render('./issues/remove', { viewData })
     } catch (error) {
@@ -181,7 +181,20 @@ export class IssueController {
    */
   async delete (req, res) {
     try {
-      await Issue.deleteOne({ _id: req.body.id }) // Specify id for issue that is going to be deleted.
+      const issue = await Issue.deleteOne({ id: req.body.id }) // Specify id for issue that is going to be deleted.
+
+      // Socket.io: Send the created issue to all subscribers.
+      res.io.emit('issue', {
+        title: issue.title,
+        description: issue.description,
+        id: issue._id
+      })
+
+      // Webhook: Call is from hook. Skip redirect and flash.
+      if (req.headers['x-gitlab-event']) {
+        res.status(200).send('Hook accepted')
+        return
+      }
 
       req.session.flash = { type: 'success', text: 'The issue was deleted successfully.' }
       res.redirect('..')

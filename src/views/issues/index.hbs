@@ -9,11 +9,18 @@
     <tbody id="issue-list">
         {{#if viewData.issues.length}}
     {{#each viewData.issues}}
-     <tr>
-            <td class="text-center text-primary">{{this.description}}</td>
+   <tr>
+       <th id="description" class="text-center text-primary">{{this.title}}
+        <img src="{{this.avatar}}" class="img-thumbnail">
+
+       </th>
+   </tr>
+     <tr>   
+            <td id="description"class="text-center text-primary">{{this.description}}</td>
+            <a>{{this.done}}</a>
             <td>
-                <a href="./issues/{{this.id}}/edit"><span class="far fa-edit"></span></a>
-                <a href="./issues/{{this.id}}/remove"><span class="far fa-trash-alt"></span></a>
+                <a href="./{{this.id}}/edit"><span class="far fa-edit"></span></a>
+                <a href="./{{this.id}}/remove"><span class="far fa-trash-alt"></span></a>
             </td>
         </tr>
     {{/each}}
@@ -27,9 +34,18 @@
 
 {{!-- Socket.io: Template for the Client. The same as above but with \ before {{}} to not process it on the server-side --}}
 <template id="issue-template">
-    <td class="text-center text-primary">\{{this.description}}</td>
-    <td>
-        <a href="./issues/\{{this.id}}/edit"><span class="far fa-edit"></span></a>
-        <a href="./issues/\{{this.id}}/remove"><span class="far fa-trash-alt"></span></a>
-    </td>
+     <tr>
+       <th id="description" class="text-center text-primary">{{this.title}}
+        <img src="{{this.avatar}}" class="img-thumbnail">
+
+       </th>
+   </tr>
+     <tr>   
+            <td id="description"class="text-center text-primary">{{this.description}}</td>
+            <a>{{this.done}}</a>
+            <td>
+                <a href="./{{this.id}}/edit"><span class="far fa-edit"></span></a>
+                <a href="./{{this.id}}/remove"><span class="far fa-trash-alt"></span></a>
+            </td>
+        </tr>
 </template>

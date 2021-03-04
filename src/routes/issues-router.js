@@ -14,6 +14,6 @@ router.get('/', controller.index) // Display list of issue.
 router.get('/new', controller.new) // Return HTML form to create a new issue.
 router.post('/create', controller.create) // Create a new issue.
 router.get('/:id/edit', controller.edit) // Return a HTML form for editing a issue.
-router.post('/:id/update', controller.update) // Update a specific issue.
+//router.post('/:id/update', controller.update) // Update a specific issue.
 router.get('/:id/remove', controller.remove) // Return a HTML form for removing a issue.
 router.post('/:id/delete', controller.delete) // Delete a specifik issue.

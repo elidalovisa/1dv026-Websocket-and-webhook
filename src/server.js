@@ -7,6 +7,7 @@
 import express from 'express'
 import hbs from 'express-hbs'
 import session from 'express-session'
+import helmet from 'helmet'
 import logger from 'morgan'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
@@ -53,6 +54,19 @@ const main = async () => {
 
   // Serve static files.
   app.use(express.static(join(directoryFullName, '..', 'public')))
+
+  // Set various HTTP headers to make the application little more secure (https://www.npmjs.com/package/helmet).
+  // (The web application uses external scripts and therefore needs to explicitly trust on code.jquery.com and cdn.jsdelivr.net.)
+  app.use(helmet())
+  app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        'script-src': ["'self'", 'code.jquery.com', 'cdn.jsdelivr.net', "'unsafe-eval'"]
+      }
+    })
+  )
+
 
   // Setup and use session middleware (https://github.com/expressjs/session).
   const sessionOptions = {
