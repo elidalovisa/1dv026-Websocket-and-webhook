@@ -6,7 +6,9 @@
  */
 
 import { Issue } from '../models/issue.js'
-
+import fetch from 'node-fetch'
+import pkg from '@gitbeaker/node'
+const { Projects } = pkg
 /**
  * Encapsulates a controller.
  */
@@ -19,7 +21,15 @@ export class IssueController {
    * @param {Function} next - Express next middleware function.
    */
   async index (req, res, next) {
+    const personaltoken = '-Tysh713pXymKXQyoEzB'
     try {
+      const projectIssues = await fetch('https://gitlab.lnu.se/api/v4/projects/13268/issues',
+        {
+          mode: 'cors',
+          headers: {
+            Authorization: 'Basic ' + personaltoken
+          }
+        })
       const viewData = {
         issues: (await Issue.find({})) // Get all objects and filter out id and value.
           .map(issue => ({
@@ -48,7 +58,7 @@ export class IssueController {
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-  async new (req, res) {
+  async new(req, res) {
     const viewData = {
       description: ''
     }
@@ -61,7 +71,7 @@ export class IssueController {
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-  async create (req, res) {
+  async create(req, res) {
     try {
       const issue = new Issue({
         description: req.body.description,
@@ -99,7 +109,7 @@ export class IssueController {
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-  async edit (req, res) {
+  async edit(req, res) {
     try {
       const issue = await Issue.findOne({ _id: req.params.id })
       const viewData = {
@@ -119,7 +129,7 @@ export class IssueController {
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-  async update (req, res) {
+  async update(req, res) {
     try {
       const issue = await Issue.updateOne({ _id: req.body._id }, {
         description: req.body.description
@@ -158,7 +168,7 @@ export class IssueController {
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-  async remove (req, res) {
+  async remove(req, res) {
     try {
       const issue = await Issue.findOne({ _id: req.params.id })
       const viewData = {
@@ -179,7 +189,7 @@ export class IssueController {
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-  async delete (req, res) {
+  async delete(req, res) {
     try {
       const issue = await Issue.deleteOne({ id: req.body.id }) // Specify id for issue that is going to be deleted.
 

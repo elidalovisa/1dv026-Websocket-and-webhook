@@ -15,7 +15,10 @@ const controller = new HookController()
 const issuesController = new IssueController()
 
 // Map HTTP verbs and route paths to controller actions.
-router.post('/issue', controller.authorize, controller.index, issuesController.create) // Controll and filter data.
+//router.get('/', controller.authorize, controller.index, issuesController.index) // Display list of issues from project.
+
+router.post('/issue', controller.authorize, controller.index, issuesController.create) // Add new issue from gitlab.
+
 //router.get('/issues', controller.authorize, controller.index, issuesController.create) // Controll and filter data.
 router.post('/:id/delete', controller.authorize, controller.index, issuesController.delete) // Delete a specifik issue.
 router.put('/projects/:id/issues/:issue_iid', issuesController.edit)
