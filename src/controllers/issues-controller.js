@@ -20,24 +20,30 @@ export class IssueController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async index (req, res, next) {
-    const personaltoken = '-Tysh713pXymKXQyoEzB'
+  async index(req, res, next) {
+    const personaltoken = 'uLT3UvhXsszHcc6xzzqZ'
     try {
       const projectIssues = await fetch('https://gitlab.lnu.se/api/v4/projects/13268/issues',
         {
-          mode: 'cors',
+          method: 'GET',
           headers: {
-            Authorization: 'Basic ' + personaltoken
+            Authorization: 'Bearer ' + personaltoken,
+            'Content-Type': 'application/json'
+
           }
         })
+
+        const text = await projectIssues.json()
+      console.log(text)
       const viewData = {
-        issues: (await Issue.find({})) // Get all objects and filter out id and value.
+        issues: text// Get all objects and filter out id and value.
           .map(issue => ({
-            id: issue._id,
+            id: issue.iid,
             title: issue.title,
             description: issue.description
           }))
       }
+      console.log(viewData)
       res.render('issues/index', { viewData }) // Present the data in HTML.
     } catch (error) {
       next(error)
@@ -190,16 +196,24 @@ export class IssueController {
    * @param {object} res - Express response object.
    */
   async delete(req, res) {
+    const personaltoken = '-Tysh713pXymKXQyoEzB'
     try {
-      const issue = await Issue.deleteOne({ id: req.body.id }) // Specify id for issue that is going to be deleted.
+      const projectIssues = await fetch('https://gitlab.lnu.se/api/v4/projects/13268/issues/16',
+        {
+          mode: 'cors',
+          headers: {
+            Authorization: 'Basic ' + personaltoken
+          }
+        })
+      // const issue = await Issue.deleteOne({ id: req.body.id }) // Specify id for issue that is going to be deleted.
 
       // Socket.io: Send the created issue to all subscribers.
-      res.io.emit('issue', {
-        title: issue.title,
-        description: issue.description,
-        id: issue._id
-      })
-
+      /*  res.io.emit('issue', {
+          title: issue.title,
+          description: issue.description,
+          id: issue._id
+        })
+  */
       // Webhook: Call is from hook. Skip redirect and flash.
       if (req.headers['x-gitlab-event']) {
         res.status(200).send('Hook accepted')

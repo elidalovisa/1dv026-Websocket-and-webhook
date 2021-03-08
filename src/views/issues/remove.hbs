@@ -2,7 +2,7 @@
   <span class="far fa-trash-alt"></span> Remove
 </h1>
 
-<form method="post" action="./{{viewData.id}}/delete">
+<form method="delete" action="./issues/{{viewData.id}}">
   <input type="hidden" name="id" value="{{viewData.id}}" />
   <div class="form-group">
     <input type="text" class="form-control" name="description" value="{{viewData.description}}" readonly="readonly" />

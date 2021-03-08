@@ -23,7 +23,7 @@ export class HookController {
       done: false,
       avatar: req.body.avatar_url,
       //closed: req.body.object_attributes.closed_at,
-      id: req.body.object_attributes_id
+      id: req.body.object_attributes.iid
     }
 
     next()
