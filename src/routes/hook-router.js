@@ -18,8 +18,8 @@ const issuesController = new IssueController()
 router.post('/issue', controller.authorize, controller.index, issuesController.create) // Add new issue from gitlab.
 
 //router.get('/issues', controller.authorize, controller.index, issuesController.create) // Controll and filter data.
-router.delete('/issues/:issue_iid', controller.authorize, controller.index, issuesController.delete) // Delete a specifik issue.
-router.put('/projects/:id/issues/:issue_iid', issuesController.edit)
+//router.put('/issues/:issue_iid', /*controller.authorize, controller.index, */issuesController.delete) // Delete a specifik issue.
+//router.put('/remove'. ) // close issue
 
 //router.get('/:id/edit', issuesController.edit) // Return a HTML form for editing a snippet.
 //router.post('/:id/update', controller.authorize, controller.index, issuesController.update) // Update a specific issue.

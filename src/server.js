@@ -67,7 +67,6 @@ const main = async () => {
     })
   )
 
-
   // Setup and use session middleware (https://github.com/expressjs/session).
   const sessionOptions = {
     name: process.env.SESSION_NAME,
