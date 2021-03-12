@@ -21,7 +21,7 @@ export class IssueController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async index (req, res, next) {
+  async index(req, res, next) {
     const personaltoken = 'geAodCyrTZKfnKHTpfvZ'
     try {
       const projectIssues = await fetch('https://gitlab.lnu.se/api/v4/projects/13268/issues',
@@ -46,11 +46,9 @@ export class IssueController {
             project_id: issue.project_id
           }))
       }
-
-      for (let i = 0; i < viewData.length; i++) {
-        console.log(viewData)
-        if (viewData[i].state === 'closed') {
-          viewData[i].done = true
+      for (let i = 0; i < viewData.issues.length; i++) {
+        if (viewData.issues[i].state === 'closed') {
+          viewData.issues[i].done = true
         }
       }
       res.render('issues/index', { viewData }) // Present the data in HTML.
@@ -65,7 +63,7 @@ export class IssueController {
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-  async create(req, res) {
+  async create (req, res) {
     try {
       const issue = new Issue({
         description: req.body.description,
@@ -76,8 +74,6 @@ export class IssueController {
         done: false,
         project_id: req.body.project_id
       })
-
-      //  await issue.save()
 
       // Socket.io: Send the created task to all subscribers.
       res.io.emit('issue', {
@@ -103,60 +99,32 @@ export class IssueController {
   }
 
   /**
-   * Returns a HTML form for editing a issue.
+   * Open the specified issue.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-  async edit(req, res) {
+  async open (req, res) {
+    const personaltoken = 'geAodCyrTZKfnKHTpfvZ'
+    const id = req.params.id
+    console.log(id)
     try {
-      // const issue = await Issue.findOne({ id: req.params.id })
-      const id = req.params.id
-      console.log(req.params.id)
-      // console.log(req)
-      const viewData = {
-        id: req.params.id,
-        title: req.params.title,
-        description: req.params.description
-      }
-      console.log(viewData)
-      res.render('./edit', { viewData })
-    } catch (error) {
-      req.session.flash = { type: 'danger', text: error.message }
-      res.redirect('..')
-    }
-  }
-
-  /**
-   * Updates a specific issue.
-   *
-   * @param {object} req - Express request object.
-   * @param {object} res - Express response object.
-   */
-  async update(req, res) {
-    try {
-      const personaltoken = '-Tysh713pXymKXQyoEzB'
-      const issue = req.params
-      console.log(issue)
-      const projectIssues = await fetch('https://gitlab.lnu.se/api/v4/projects/13268/issues/' + Issue + '?state_event=close',
+      const projectIssues = await fetch('https://gitlab.lnu.se/api/v4/projects/13268/issues/' + id + '?state_event=reopen',
         {
-          method: 'PUT',
-          mode: 'cors',
+          method: 'put',
           headers: {
-            Authorization: 'Basic ' + personaltoken
+            'PRIVATE-TOKEN': personaltoken,
+            'Content-Type': 'application/json'
           }
         })
-      /*
-      console.log(req.params)
-      const issue = await Issue.updateOne({ _id: req.body._id }, {
-        description: req.body.description
-      })
-*/
-      // Socket.io: Send the created task to all subscribers.
+
+      // Socket.io: Send the reopened issue to all subscribers.
+      const issue = req.params.id
       res.io.emit('issue', {
         title: issue.title,
         description: issue.description,
-        id: issue._id
+        id: issue._id,
+        state: issue.state
       })
 
       // Webhook: Call is from hook. Skip redirect and flash.
@@ -164,46 +132,22 @@ export class IssueController {
         res.status(200).send('Hook accepted')
         return
       }
-      if (issue.nModified === 1) {
-        req.session.flash = { type: 'success', text: 'The issue was updated successfully.' }
-      } else {
-        req.session.flash = {
-          type: 'danger',
-          text: 'The task you attempted to update was removed by another user after you got the original values.'
-        }
-      }
+
+      req.session.flash = { type: 'success', text: 'The issue was closed successfully.' }
       res.redirect('..')
     } catch (error) {
       req.session.flash = { type: 'danger', text: error.message }
-      res.redirect('./edit')
+      res.redirect('./remove')
     }
   }
 
-  /**
-   * Returns a HTML form for removing a issue.
-   *
-   * @param {object} req - Express request object.
-   * @param {object} res - Express response object.
-   */
-  async remove(req, res) {
-    try {
-      const viewData = {
-        id: req.params.id
-      }
-      res.render('./issues/close', { viewData })
-    } catch (error) {
-      req.session.flash = { type: 'danger', text: error.message }
-      res.redirect('..')
-    }
-  }
-  
   /**
    * Close the specified issue.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-  async close (req, res) {
+  async close(req, res) {
     const personaltoken = 'geAodCyrTZKfnKHTpfvZ'
     const id = req.params.id
     console.log(id)
@@ -216,17 +160,16 @@ export class IssueController {
             'Content-Type': 'application/json'
           }
         })
-        console.log(projectIssues)
 
-      // const issue = await Issue.deleteOne({ id: req.body.id }) // Specify id for issue that is going to be deleted.
-
-      // Socket.io: Send the created issue to all subscribers.
-   /*   res.io.emit('issue', {
+      // Socket.io: Send the closed issue to all subscribers.
+      const issue = req.params.id
+      res.io.emit('issue', {
         title: issue.title,
         description: issue.description,
-        id: issue._id
+        id: issue._id,
+        state: issue.state
       })
-*/
+
       // Webhook: Call is from hook. Skip redirect and flash.
       if (req.headers['x-gitlab-event']) {
         res.status(200).send('Hook accepted')

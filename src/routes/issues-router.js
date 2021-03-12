@@ -16,6 +16,5 @@ export const router = express.Router()
 // Map HTTP verbs and route paths to controller actions.
 router.get('/', controller.index) // Display list of all issues from project.
 
-router.get('/:iid/edit', controller.edit) // Return a HTML form for editing a issue.
-
+router.get('/:id/open', controller.open) // Open a specific issue.
 router.get('/:id/close', controller.close) // Close a specifik issue.
