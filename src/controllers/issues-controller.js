@@ -18,7 +18,7 @@ export class IssueController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async index(req, res, next) {
+  async index (req, res, next) {
     try {
       const projectIssues = await fetch('https://gitlab.lnu.se/api/v4/projects/13268/issues',
         {
@@ -60,7 +60,7 @@ export class IssueController {
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-  async edit(req, res) {
+  async edit (req, res) {
     try {
       const id = req.params.id
       const fetchedIssue = await fetch('https://gitlab.lnu.se/api/v4/projects/13268/issues/' + id,
@@ -123,12 +123,13 @@ export class IssueController {
         done: false,
         title: req.body.title,
         description: req.body.description,
-        project_id: req.body.project_id
+        project_id: req.body.project_id,
+        updated_by: req.body.updated_by
       }
       if (issue.state === 'closed') {
         issue.done = true
       }
-console.log(issue.done)
+
       if (issue.done) {
         // Socket.io: Send the opened issue to all subscribers.
         res.io.emit('closed', {
@@ -151,8 +152,15 @@ console.log(issue.done)
           avatar: issue.avatar,
           done: issue.done
         })
+      }
+      if (issue.updated_by !== null) {
+        // Socket.io: Send the updated issue to all subscribers.
+        res.io.emit('updated', {
+          title: issue.title,
+          description: issue.description
+        })
       } else {
-        // Socket.io: Send the created task to all subscribers.
+        // Socket.io: Send the created issue to all subscribers.
         res.io.emit('issue', {
           title: issue.title,
           description: issue.description,
@@ -185,7 +193,7 @@ console.log(issue.done)
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-  async open(req, res) {
+  async open (req, res) {
     const id = req.params.id
     try {
       const issueResponse = await fetch('https://gitlab.lnu.se/api/v4/projects/13268/issues/' + id + '?state_event=reopen',
@@ -241,7 +249,7 @@ console.log(issue.done)
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-  async close(req, res) {
+  async close (req, res) {
     const id = req.params.id
     try {
       const issueResponse = await fetch('https://gitlab.lnu.se/api/v4/projects/13268/issues/' + id + '?state_event=close',

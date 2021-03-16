@@ -7,7 +7,6 @@
 import express from 'express'
 import hbs from 'express-hbs'
 import session from 'express-session'
-import helmet from 'helmet'
 import logger from 'morgan'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'

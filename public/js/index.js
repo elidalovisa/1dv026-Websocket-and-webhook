@@ -21,6 +21,14 @@ if (issueTemplate) {
     issueList.appendChild(tr)
   })
 
+  // Listen for message "updated" from the server
+  socket.on('updated', arg => {
+    const descriptionTitle = document.querySelector('#description-title')
+    const description = document.querySelector('#description')
+    description.innerHTML = arg.description
+    descriptionTitle.innerHTML = arg.title
+  })
+
   // Listen for message "closed" from the server
   socket.on('closed', arg => {
     const state = document.querySelector('#state')

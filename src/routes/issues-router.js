@@ -7,10 +7,8 @@
 
 import express from 'express'
 import { IssueController } from '../controllers/issues-controller.js'
-import { HookController } from '../controllers/hook-controller.js'
 
 const controller = new IssueController()
-const hookController = new HookController()
 
 export const router = express.Router()
 // Map HTTP verbs and route paths to controller actions.
