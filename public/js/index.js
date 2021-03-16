@@ -32,15 +32,16 @@ if (issueTemplate) {
   // Listen for message "closed" from the server
   socket.on('closed', arg => {
     const state = document.querySelector('#state')
-    const done = document.querySelector('.form-control')
-    console.log(state)
+    const close = document.querySelector('#close')
     state.textContent = 'closed'
+    close.textContent = 'Open Issue'
   })
 
   // Listen for message "open" from the server
   socket.on('open', arg => {
     const state = document.querySelector('#state')
-    console.log(state)
+    const open = document.querySelector('#open')
     state.textContent = 'open'
+    open.textContent = 'Close Issue'
   })
 }

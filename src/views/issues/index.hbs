@@ -19,10 +19,10 @@
             <td>
                 <a id="state">{{this.state}}</a>
                {{#if this.done }} 
-                <button><a href="./{{this.id}}/open">Open Issue</a></button>
+                <button id="open"><a href="./{{this.id}}/open">Open Issue</a></button>
                  {{/if}}
                  {{#unless this.done}}
-                <button><a href="./{{this.id}}/close">Close Issue</a></button>
+                <button id="close"><a href="./{{this.id}}/close">Close Issue</a></button>
                  {{/unless}}
 
   <div><img src="{{this.avatar}}" class="img-thumbnail">
