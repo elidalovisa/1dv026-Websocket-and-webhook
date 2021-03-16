@@ -11,7 +11,6 @@ import logger from 'morgan'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 import { router } from './routes/router.js'
-import { connectDB } from './config/mongoose.js'
 import dotenv from 'dotenv'
 
 // Socket.io: To add Socket.io support
@@ -24,8 +23,6 @@ dotenv.config()
  * The main function of the application.
  */
 const main = async () => {
-  await connectDB()
-
   // Creates an Express application.
   const app = express()
   const baseURL = process.env.BASE_URL || '/'
