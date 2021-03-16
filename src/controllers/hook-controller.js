@@ -28,20 +28,16 @@ export class HookController {
     next()
   }
 
-  /**
+   /**
     * Controll if issue already excist in view and sends it to Issues Update Controller.
     *
     * @param {object} req - Express request object.
     * @param {object} res - Express response object.
     * @param {Function} next - Express next middleware function.
     */
-  update(req, res, next) {
-    req.body = {
-      id: req.body.object_attributes.iid,
-      state: req.body.object_attributes.state,
-      title: req.body.object_attributes.title,
-      description: req.body.object_attributes.description,
-      project_id: req.body.object_attributes.project_id
+  close (req, res, next) {
+    if (req.body.state === 'closed') {
+
     }
 
     next()

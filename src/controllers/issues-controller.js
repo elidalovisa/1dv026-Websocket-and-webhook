@@ -128,23 +128,40 @@ export class IssueController {
       if (issue.state === 'closed') {
         issue.done = true
       }
-
-      for (let i = 0; i < viewData.issues.length; i++) {
-        if (viewData.issues[i].id === issue.id) {
-          console.log(issue.id)
-        } else {
-          console.log('hej')
-        }
+console.log(issue.done)
+      if (issue.done) {
+        // Socket.io: Send the opened issue to all subscribers.
+        res.io.emit('closed', {
+          title: issue.title,
+          description: issue.description,
+          state: issue.state,
+          id: issue.id,
+          avatar: issue.avatar,
+          done: issue.done
+        })
       }
-      // Socket.io: Send the created task to all subscribers.
-      res.io.emit('issue', {
-        title: issue.title,
-        description: issue.description,
-        state: issue.state,
-        id: issue.id,
-        avatar: issue.avatar,
-        done: issue.done
-      })
+
+      if (!issue.done) {
+        // Socket.io: Send the closed issue to all subscribers.
+        res.io.emit('open', {
+          title: issue.title,
+          description: issue.description,
+          state: issue.state,
+          id: issue.id,
+          avatar: issue.avatar,
+          done: issue.done
+        })
+      } else {
+        // Socket.io: Send the created task to all subscribers.
+        res.io.emit('issue', {
+          title: issue.title,
+          description: issue.description,
+          state: issue.state,
+          id: issue.id,
+          avatar: issue.avatar,
+          done: issue.done
+        })
+      }
 
       // Webhook: Call is from hook. Skip redirect and flash.
       if (req.headers['x-gitlab-event']) {
@@ -168,7 +185,7 @@ export class IssueController {
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-  async open (req, res) {
+  async open(req, res) {
     const id = req.params.id
     try {
       const issueResponse = await fetch('https://gitlab.lnu.se/api/v4/projects/13268/issues/' + id + '?state_event=reopen',
@@ -190,19 +207,16 @@ export class IssueController {
         description: response.description,
         project_id: response.project_id
       }
-
-      console.log(issue)
-
       if (issue.state === 'closed') {
         issue.done = true
       }
 
-      console.log(issue)
-
-      // Socket.io: Send the reopened task to all subscribers.
-      res.io.emit('reopen', {
-        id: issue.iid,
+      // Socket.io: Send the closed issue to all subscribers.
+      res.io.emit('open', {
+        title: issue.title,
+        description: issue.description,
         state: issue.state,
+        id: issue.id,
         avatar: issue.avatar,
         done: issue.done
       })
@@ -251,7 +265,6 @@ export class IssueController {
       if (issue.state === 'closed') {
         issue.done = true
       }
-      console.log(issue)
 
       // Socket.io: Send the closed issue to all subscribers.
       res.io.emit('closed', {
