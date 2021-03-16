@@ -15,7 +15,5 @@ const hookController = new HookController()
 export const router = express.Router()
 // Map HTTP verbs and route paths to controller actions.
 router.get('/', controller.index) // Display list of all issues from project.
-router.post('/create', controller.create)
-router.get('/:id/edit', controller.edit) // Display list of all issues from project.
-router.post('/:id/open', controller.open) // Open a specific issue.
+router.get('/:id/open', controller.open) // Open a specific issue.
 router.get('/:id/close', controller.close) // Close a specifik issue.

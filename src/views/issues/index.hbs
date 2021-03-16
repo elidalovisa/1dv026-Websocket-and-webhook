@@ -17,8 +17,8 @@
             <td id="description"class="text-center text-primary">{{this.description}}</td>
 
             <td>
-                <a>{{this.state}}</a>
-                <a href="./{{this.id}}/edit"><span class="far fa-edit"></span></a>
+                <a id="state">{{this.state}}</a>
+                <a href="./{{this.id}}/open"><span class="far fa-edit"></span></a>
                 <a href="./{{this.id}}/close"><span class="far fa-trash-alt"></span></a>
     <a class="form-group">
     <input type="checkbox" class="form-control" name="done" {{#if this.done }} checked="checked" {{/if}} readonly="readonly" />
@@ -46,10 +46,10 @@
             <td id="description"class="text-center text-primary">\{{this.description}}</td>
 
             <td>
-                <a id ="state">\{{this.state}}</a>
+                <a id="state">\{{this.state}}</a>
                 <a href="./\{{this.id}}/edit"><span class="far fa-edit"></span></a>
                 <a href="./\{{this.id}}/close"><span class="far fa-trash-alt"></span></a>
-
+   
   <div><img src="\{{this.avatar}}" class="img-thumbnail">
 </div>
             </td>

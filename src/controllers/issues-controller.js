@@ -18,7 +18,7 @@ export class IssueController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async index (req, res, next) {
+  async index(req, res, next) {
     try {
       const projectIssues = await fetch('https://gitlab.lnu.se/api/v4/projects/13268/issues',
         {
@@ -125,20 +125,25 @@ export class IssueController {
         description: req.body.description,
         project_id: req.body.project_id
       }
-
       if (issue.state === 'closed') {
         issue.done = true
       }
-console.log(issue)
+
+      for (let i = 0; i < viewData.issues.length; i++) {
+        if (viewData.issues[i].id === issue.id) {
+          console.log(issue.id)
+        } else {
+          console.log('hej')
+        }
+      }
       // Socket.io: Send the created task to all subscribers.
       res.io.emit('issue', {
         title: issue.title,
         description: issue.description,
         state: issue.state,
         id: issue.id,
-        avatar: issue.avatar
-       // done: issue.done,
-       
+        avatar: issue.avatar,
+        done: issue.done
       })
 
       // Webhook: Call is from hook. Skip redirect and flash.
@@ -163,7 +168,7 @@ console.log(issue)
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-  async open(req, res) {
+  async open (req, res) {
     const id = req.params.id
     try {
       const issueResponse = await fetch('https://gitlab.lnu.se/api/v4/projects/13268/issues/' + id + '?state_event=reopen',
@@ -217,60 +222,6 @@ console.log(issue)
   }
 
   /**
-  * Open the specified issue.
-  *
-  * @param {object} req - Express request object.
-  * @param {object} res - Express response object.
-  */
-  async openPost(req, res) {
-    const id = req.params.id
-    try {
-      const issueResponse = await fetch('https://gitlab.lnu.se/api/v4/projects/13268/issues/' + id,
-        {
-          method: 'get',
-          headers: {
-            'PRIVATE-TOKEN': process.env.PERSONAL_TOKEN,
-            'Content-Type': 'application/json'
-          }
-        })
-
-      const response = await issueResponse.json()
-      const issue = {
-        id: response.iid,
-        state: response.state,
-        avatar: response.author.avatar_url,
-        title: response.title,
-        done: false,
-        description: response.description
-      }
-      if (issue.state === 'closed') {
-        issue.done = true
-      }
-      console.log(issue)
-
-      // Socket.io: Send the reopened issue to all subscribers.
-      res.io.emit('issue', {
-        title: issue.title,
-        description: issue.description,
-        done: issue.done,
-        id: issue._id
-      })
-
-      // Webhook: Call is from hook. Skip redirect and flash.
-      if (req.headers['x-gitlab-event']) {
-        res.status(200).send('Hook accepted')
-        return
-      }
-
-      req.session.flash = { type: 'success', text: 'The issue was reopened successfully.' }
-      res.redirect('..')
-    } catch (error) {
-      req.session.flash = { type: 'danger', text: error.message }
-      res.redirect('./remove')
-    }
-  }
-
-  /**
    * Close the specified issue.
    *
    * @param {object} req - Express request object.
@@ -303,13 +254,14 @@ console.log(issue)
       console.log(issue)
 
       // Socket.io: Send the closed issue to all subscribers.
-      res.io.emit('issue', {
+      res.io.emit('closed', {
         title: issue.title,
         description: issue.description,
-        done: issue.done,
-        id: issue.id
+        state: issue.state,
+        id: issue.id,
+        avatar: issue.avatar,
+        done: issue.done
       })
-
 
       // Webhook: Call is from hook. Skip redirect and flash.
       if (req.headers['x-gitlab-event']) {

@@ -17,20 +17,14 @@ if (issueTemplate) {
     const issueString = hbsTemplate(arg)
     const tr = document.createElement('tr')
     tr.innerHTML = issueString
-    console.log(tr)
     const issueList = document.querySelector('#issue-list')
-
     issueList.appendChild(tr)
-    console.log(issueList)
   })
 
-  // Listen for message "reopen" from the server
-  socket.on('reopen', arg => {
-    const openString = hbsTemplate(arg)
-    const td = document.createElement('td')
-    td.innerHTML = openString
-
-    const formControl = document.querySelector('.form-control')
-    formControl.innerHTML = openString.appendChild()
+  // Listen for message "closed" from the server
+  socket.on('closed', arg => {
+    const state = document.querySelector('#state')
+    console.log(state)
+    state.textContent = 'closed'
   })
 }
