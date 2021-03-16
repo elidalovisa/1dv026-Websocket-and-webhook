@@ -18,12 +18,11 @@ export class HookController {
    */
   index (req, res, next) {
     req.body = {
-      description: req.body.object_attributes.description,
+      id: req.body.object_attributes.iid,
+      state: req.body.object_attributes.state,
       title: req.body.object_attributes.title,
-      done: false,
-      avatar: req.body.avatar_url,
-      //closed: req.body.object_attributes.closed_at,
-      id: req.body.object_attributes.iid
+      description: req.body.object_attributes.description,
+      project_id: req.body.object_attributes.project_id
     }
 
     next()

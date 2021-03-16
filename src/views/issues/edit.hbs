@@ -1,11 +1,15 @@
 <h1>
-  <span class="far fa-edit"></span> Edit
+  <span class="far fa-edit"></span> Open Issue
 </h1>
 
-<form method="post" action="./{{viewData.id}}/update">
+<form method="post" action="./{{viewData.id}}/open">
   <input type="hidden" name="id" value="{{viewData.id}}" />
   <div class="form-group">
-    <input type="text" class="form-control" name="description" placeholder="Update task description here" value="{{viewData.description}}" required="required" autofocus="autofocus" />
+    <td id="description"class="text-center text-primary">{{viewData.description}}</td>
   </div>
-  <button type="submit" class="btn btn-lg btn-primary">Update Issue</button>
+   <div class="form-group">
+    <input type="checkbox" class="form-control" name="done" {{#if viewData.done }} checked="checked" {{/if}} />
+  </div>
+  <button type="submit" class="btn btn-lg btn-primary">Open Issue</button>
 </form>
+
