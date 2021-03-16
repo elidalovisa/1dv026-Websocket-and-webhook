@@ -47,64 +47,9 @@ export class IssueController {
         }
       }
 
-      console.log(viewData)
       res.render('issues/index', { viewData }) // Present the data in HTML.
     } catch (error) {
       next(error)
-    }
-  }
-
-  /**
-   * Returns a HTML form for closing a issue.
-   *
-   * @param {object} req - Express request object.
-   * @param {object} res - Express response object.
-   */
-  async edit (req, res) {
-    try {
-      const id = req.params.id
-      const fetchedIssue = await fetch('https://gitlab.lnu.se/api/v4/projects/13268/issues/' + id,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: 'Bearer ' + process.env.PERSONAL_TOKEN,
-            'Content-Type': 'application/json'
-
-          }
-        })
-      const responseIssue = await fetchedIssue.json()
-      const issue = {
-        id: responseIssue.iid,
-        state: responseIssue.state,
-        done: false,
-        title: responseIssue.title,
-        description: responseIssue.description,
-        project_id: responseIssue.project_id
-      }
-      if (issue.state === 'closed') {
-        issue.done = true
-      }
-
-      // Socket.io: Send the created task to all subscribers.
-      res.io.emit('issue', {
-        id: issue.id,
-        state: issue.state,
-        avatar: issue.avatar,
-        done: issue.done,
-        title: issue.title,
-        description: issue.description,
-        project_id: issue.project_id
-      })
-
-      // Webhook: Call is from hook. Skip redirect and flash.
-      if (req.headers['x-gitlab-event']) {
-        res.status(200).send('Hook accepted')
-        return
-      }
-      res.render('issues/edit', { issue })
-    } catch (error) {
-      req.session.flash = { type: 'danger', text: error.message }
-      res.redirect('..')
     }
   }
 
