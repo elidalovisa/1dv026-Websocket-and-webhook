@@ -1,0 +1,66 @@
+<h1>
+    <span class="far fa-list-alt"></span> Issues
+</h1>
+
+<table class="table table-striped">
+    <thead>
+<div><h3>Issues</h3></div>            
+    </thead>
+    <tbody id="issue-list">
+        {{#if viewData.issues.length}}
+    {{#each viewData.issues}}
+   <tr>
+       <th id="description" class="text-center text-primary">{{this.title}}
+       </th>
+   </tr>
+     <tr>   
+            <td id="description"class="text-center text-primary">{{this.description}}</td>
+
+            <td>
+                <a>{{this.state}}</a>
+                <a href="./{{this.id}}/edit"><span class="far fa-edit"></span></a>
+                <a href="./{{this.id}}/close"><span class="far fa-trash-alt"></span></a>
+    <a class="form-group">
+    <input type="checkbox" class="form-control" name="done" {{#if this.done }} checked="checked" {{/if}} readonly="readonly" />
+  </a>
+  <div><img src="{{this.avatar}}" class="img-thumbnail">
+</div>
+            </td>
+        </tr>
+    {{/each}}
+    {{else}}
+    <tr colspan="2">
+      <td class="text-center">No issues to display.</td>
+    </tr>
+  {{/if}}
+    </tbody>
+</table>
+
+{{!-- Socket.io: Template for the Client. The same as above but with \ before {{}} to not process it on the server-side --}}
+<template id="issue-template">
+       <th id="description" class="text-center text-primary">\{{this.title}}
+       </th>
+   </tr>
+     <tr>   
+            <td id="description"class="text-center text-primary">\{{this.description}}</td>
+
+            <td>
+                <a>\{{this.state}}</a>
+                <a href="./\{{this.id}}/edit"><span class="far fa-edit"></span></a>
+                <a href="./\{{this.id}}/close"><span class="far fa-trash-alt"></span></a>
+                 <a class="form-group">
+    <input type="checkbox" class="form-control" name="done" \{{#if this.done }} checked="checked" \{{/if}} readonly="readonly" />
+  </a>
+  <div><img src="\{{this.avatar}}" class="img-thumbnail">
+</div>
+            </td>
+</template>
+
+
+{{!-- Socket.io: Template for the Client. The same as above but with \ before {{}} to not process it on the server-side --}}
+<template id="open-template">
+                 <a class="form-group">
+    <input type="checkbox" class="form-control" name="done" \{{#if this.done }} checked="checked" \{{/if}} readonly="readonly" />
+  </a>
+</template>
+
