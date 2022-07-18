@@ -1,4 +1,8 @@
-# Assignment B2 - Realtime Web Application
+This application was a project I made as a part of my studies at Linnaeus University.
+
+# The assignment description
+
+## Assignment B2 - Realtime Web Application
 
 In this assignment, you will be writing a web application that includes realtime web technologies such as WebSocket and webhook. You must put the application into production on a public server. 
 
